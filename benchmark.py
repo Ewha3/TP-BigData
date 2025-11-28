@@ -97,7 +97,7 @@ def main() :
             run_res = asyncio.run(run_fetch(1000, nb))
             res.append([nb,run_res[0],i,run_res[1],nb])
     generate_csv_plot(res, "conc.csv", ["Nombre d'utilisateurs concurrents","Temps moyen par requête (s)","Temps moyen par requête selon la concurrence","conc.png"])
-
+"""
     # echelle sur le nombre de posts
     res = []
     nb_posts = [10,100,1000]
@@ -125,6 +125,6 @@ def main() :
         actual_followee = nb
         actual_posts = 15000
     generate_csv_plot(res, "fanout.csv", ["Nombre de followee par utilisateur","Temps moyen par requête (s)","Temps moyen par requête selon le nombre de followee","fanout.png"])
-
+"""
 if __name__ == "__main__":
     main()
