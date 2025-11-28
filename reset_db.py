@@ -1,7 +1,33 @@
 import argparse
 from google.cloud import datastore
 
+"""
+Script de réinitialisation (reset) pour Tiny Instagram.
+
+Ce script permet de supprimer tout ou partie des entités stockées dans
+Google Cloud Datastore du projet actuellement configuré dans gcloud
+(`gcloud config get-value project`).
+
+Usage basique : 
+    python reset_db.py
+
+Paramètres :
+  --kind <KindName>   Supprime uniquement les entités de ce kind.
+                      Si absent, supprime toutes les entités utilisateur.
+  
+  --dry-run           N'exécute aucune suppression. Montre uniquement le
+                      nombre d'entités qui auraient été supprimées.
+  
+ATTENTION :
+  Ce script modifie directement les données du Datastore du projet Google Cloud actif. Vérifiez votre configuration gcloud avant usage : gcloud config get-value project
+    Utilisez --dry-run pour valider la portée de l’opération avant suppression réelle.
+"""
+
+
 def parse_args():
+    """
+    Parse les arguments de la commande
+    """
     p = argparse.ArgumentParser(description="Supprime toutes les entités de Datastore pour Tiny Instagram")
     p.add_argument('--kind', type=str, default=None,
                    help="Supprime seulement les entités de ce 'kind'. Si non spécifié, supprime tout.")
@@ -10,6 +36,11 @@ def parse_args():
     return p.parse_args()
 
 def delete_all_entities(client: datastore.Client, kind: str | None, dry: bool):
+    """
+    Supprime toutes les entités de Datastore d'un type donné, ou de tous les types si aucun type n'est spécifié
+    Entrée : un datastore, un type d'entités ou None, un booléen indiquant si c'est un dry run
+    Sortie : le nombre d'entités supprimées
+    """
     query = client.query()
     if kind:
         query.kind = kind
