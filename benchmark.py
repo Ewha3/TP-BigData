@@ -9,15 +9,27 @@ import asyncio
 import aiohttp
 import random
 
+URL = "https://bigdatatp2025.ew.r.appspot.com/api/timeline?user=user" # URL sur laquelle faire les requêtes
+
 async def fetch(session, url):
+    """
+    Fonction asynchrone pour effectuer une requête GET
+    Entrée : session aiohttp, url de la requête
+    Sortie : temps de réponse et code status
+    """
     timeS = time.time()
     async with session.get(url) as response:
         return time.time() - timeS , response.status
 
 async def run_fetch(n, c):
+    """
+    Lance c requêtes asynchrones pour récupérer le timeline de c utilisateurs aléatoires parmi n utilisateurs
+    Entrée : n le nombre d'utilisateurs, c le nombre de requêtes à lancer
+    Sortie : le temps moyen de réponse et le nombre de requêtes ayant échouées
+    """
     async with aiohttp.ClientSession() as session:
-        await fetch(session, "https://bigdatatp2025.ew.r.appspot.com/api/timeline?user=user1")
-        tasks = [fetch(session, "https://bigdatatp2025.ew.r.appspot.com/api/timeline?user=user"+str(random.randint(1,n))) for i in range(c)]
+        await fetch(session, URL + "1") # Warmup
+        tasks = [fetch(session, URL+str(random.randint(1,n))) for i in range(c)]
         results = await asyncio.gather(*tasks)
     avgTime = 0
     failed = 0
@@ -32,6 +44,7 @@ def generate_data(users, followee, posts):
     """
     Lance une commande pour remplir la base de données
     Entrée : un entier users représentant le nombre d'utilisateurs à créer, un entier followee représentant le nombre de followee par user et un entier posts représentant le nombre de posts par user
+    Sortie : la sortie de la commande
     """
     cmd = ["python", "seed.py", "--users", str(users), "--follows-min", str(followee), "--follows-max", str(followee), "--posts", str(posts)]
     try:
@@ -97,7 +110,7 @@ def main() :
             run_res = asyncio.run(run_fetch(1000, nb))
             res.append([nb,run_res[0],i,run_res[1],nb])
     generate_csv_plot(res, "conc.csv", ["Nombre d'utilisateurs concurrents","Temps moyen par requête (s)","Temps moyen par requête selon la concurrence","conc.png"])
-"""
+
     # echelle sur le nombre de posts
     res = []
     nb_posts = [10,100,1000]
@@ -125,6 +138,6 @@ def main() :
         actual_followee = nb
         actual_posts = 15000
     generate_csv_plot(res, "fanout.csv", ["Nombre de followee par utilisateur","Temps moyen par requête (s)","Temps moyen par requête selon le nombre de followee","fanout.png"])
-"""
+
 if __name__ == "__main__":
     main()
