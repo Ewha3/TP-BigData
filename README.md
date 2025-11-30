@@ -1,7 +1,7 @@
 # Projet Données Massives et Cloud
 
 Ce projet a été réalisé dans le cadre du cours **Données Massives et Cloud**.  
-Il inclut un système de benchmark permettant d’évaluer la performance de l'API TinyInstagram selon plusieurs paramètres (nombres d'utilisateurs simultané, nombre de posts par utilisateur, nombre de followee par utilisateur).
+Il inclut un système de benchmark permettant d’évaluer la performance de l'application [TinyInstagram](https://github.com/momo54/massive-gcp) selon plusieurs paramètres (nombres d'utilisateurs simultané, nombre de posts par utilisateur, nombre de followee par utilisateur).
 
 ---
 
